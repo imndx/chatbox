@@ -3,6 +3,7 @@ import { Config, Settings } from "src/shared/types"
 import { getOS } from './navigator'
 import { parseLocale } from '@/i18n/parser'
 import Exporter from './exporter'
+import webPlatform from './webPlatform';
 
 export class DesktopPlatform {
     public ipc: ElectronIPC
@@ -90,4 +91,9 @@ export class DesktopPlatform {
     }
 }
 
-export default new DesktopPlatform(window.electronAPI as any)
+// Detect if we're running in the browser
+const isRunningInBrowser = typeof window !== 'undefined' && !window.electronAPI;
+
+export default isRunningInBrowser 
+    ? webPlatform 
+    : new DesktopPlatform(window.electronAPI as any);

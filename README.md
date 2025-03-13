@@ -237,6 +237,21 @@ npm run package
 npm run package:all
 ```
 
+## Running the Web Version
+
+You can also run Chatbox in a web browser, which provides additional accessibility options:
+
+1. Build the web version:
+   ```bash
+   npm run web
+   ```
+
+2. This will start a server at http://localhost:3000
+
+3. Open your browser and navigate to http://localhost:3000
+
+Note: Some features may be limited in the web version compared to the desktop application.
+
 ## Buy Me a Coffee
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/benn)
