@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 export function settings(): Settings {
     return {
-        aiProvider: ModelProvider.OpenAI,
+        aiProvider: ModelProvider.Ollama,
         openaiKey: '',
         apiHost: 'https://api.openai.com',
 
@@ -26,7 +26,7 @@ export function settings(): Settings {
         claudeModel: 'claude-3-5-sonnet-20241022',
 
         ollamaHost: 'http://127.0.0.1:11434',
-        ollamaModel: '',
+        ollamaModel: 'qwen2.5:1.5b',
 
         lmStudioHost: 'http://127.0.0.1:1234',
         lmStudioModel: '',

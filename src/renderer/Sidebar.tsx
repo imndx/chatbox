@@ -77,8 +77,8 @@ export default function Sidebar(props: Props) {
                             >
                                 <img src={icon} className="w-8 h-8 mr-3" />
                                 <div className="flex flex-col items-start">
-                                    <span className="text-2xl font-medium">Chatbox</span>
-                                    <span className="text-[10px] opacity-50">Community Edition</span>
+                                    <span className="text-2xl font-medium">AIChats</span>
+                                    <span className="text-[10px] opacity-50">Powered by chatbox</span>
                                 </div>
                             </a>
                         </Box>
@@ -129,6 +129,7 @@ export default function Sidebar(props: Props) {
                             </Typography>
                         </MenuItem>
 
+                        {/*
                         <MenuItem onClick={props.openAboutWindow} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
                             <ListItemIcon>
                                 <IconButton>
@@ -149,6 +150,7 @@ export default function Sidebar(props: Props) {
                                 </Badge>
                             </ListItemText>
                         </MenuItem>
+                        */}
                     </MenuList>
                 </Stack>
             </div>
