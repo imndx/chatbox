@@ -29,6 +29,7 @@ import * as dateFns from "date-fns"
 import { cn } from '@/lib/utils'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
+import { Paperclip } from 'lucide-react'
 
 export interface Props {
     id?: string
@@ -56,9 +57,49 @@ export default function Message(props: Props) {
 
     const { msg, className, collapseThreshold, hiddenButtonGroup, small } = props
 
+    // Process message content to extract file attachments
+    const processMessageContent = (content: string) => {
+        if (typeof content !== 'string') {
+            return { displayContent: content, attachments: [] }
+        }
+
+        const attachmentRegex = /<ATTACHMENT_FILE>[\s\S]*?<\/ATTACHMENT_FILE>/g
+        const fileIndexRegex = /<FILE_INDEX>(.*?)<\/FILE_INDEX>/
+        const fileNameRegex = /<FILE_NAME>(.*?)<\/FILE_NAME>/
+        
+        let displayContent = content
+        const attachments: { index: number, name: string }[] = []
+        
+        // Find all attachments in the content
+        const attachmentMatches = content.match(attachmentRegex)
+        if (attachmentMatches) {
+            attachmentMatches.forEach(match => {
+                const indexMatch = match.match(fileIndexRegex)
+                const nameMatch = match.match(fileNameRegex)
+                
+                if (indexMatch && nameMatch) {
+                    attachments.push({
+                        index: parseInt(indexMatch[1]),
+                        name: nameMatch[1]
+                    })
+                }
+                
+                // Remove the attachment content from display
+                displayContent = displayContent.replace(match, '')
+            })
+            
+            // Trim any extra whitespace that might have been left
+            displayContent = displayContent.trim()
+        }
+        
+        return { displayContent, attachments }
+    }
+
+    const { displayContent, attachments } = processMessageContent(msg.content)
+
     const needCollapse = collapseThreshold
-        && (JSON.stringify(msg.content)).length > collapseThreshold
-        && (JSON.stringify(msg.content)).length - collapseThreshold > 50
+        && (JSON.stringify(displayContent)).length > collapseThreshold
+        && (JSON.stringify(displayContent)).length - collapseThreshold > 50
     const [isCollapsed, setIsCollapsed] = useState(needCollapse)
 
     const ref = useRef<HTMLDivElement>(null)
@@ -66,11 +107,11 @@ export default function Message(props: Props) {
     const tips: string[] = []
     if (props.sessionType === 'chat' || !props.sessionType) {
         if (showWordCount && !msg.generating) {
-            tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : countWord(msg.content)}`)
+            tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : countWord(displayContent)}`)
         }
         if (showTokenCount && !msg.generating) {
             if (msg.tokenCount === undefined) {
-                msg.tokenCount = estimateTokensFromMessages([msg])
+                msg.tokenCount = estimateTokensFromMessages([{...msg, content: displayContent}])
             }
             tips.push(`token count: ${msg.tokenCount}`)
         }
@@ -102,15 +143,15 @@ export default function Message(props: Props) {
         }
     }, [msg.content])
 
-    let content = msg.content
-    if (typeof msg.content !== 'string') {
-        content = JSON.stringify(msg.content)
+    let content = displayContent
+    if (typeof displayContent !== 'string') {
+        content = JSON.stringify(displayContent)
     }
     if (msg.generating) {
         content += '...'
     }
     if (needCollapse && isCollapsed) {
-        content = msg.content.slice(0, collapseThreshold) + '... '
+        content = displayContent.slice(0, collapseThreshold) + '... '
     }
 
     const CollapseButton = (
@@ -219,6 +260,24 @@ export default function Message(props: Props) {
                                     </div>
                                 )
                             }
+                            
+                            {/* Display file attachments */}
+                            {attachments.length > 0 && (
+                                <div className="mt-2">
+                                    {attachments.map((file, index) => (
+                                        <div 
+                                            key={index} 
+                                            className="flex items-center rounded-md px-3 py-1 mb-1 mr-2 inline-block"
+                                            style={{ backgroundColor: theme.palette.action.selected }}
+                                        >
+                                            <Paperclip size={14} className="mr-1" />
+                                            <span className="text-xs" style={{ color: theme.palette.text.primary }}>
+                                                {file.name}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </Box>
                         <MessageErrTips msg={msg} />
                         {

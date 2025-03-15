@@ -160,8 +160,10 @@
         "js-tiktoken": "^1.0.7",
         "lodash": "^4.17.21",
         "lucide-react": "^0.285.0",
+        "mammoth": "^1.6.0",
         "ofetch": "^1.0.1",
         "optics-ts": "^2.4.0",
+        "pdfjs-dist": "^3.11.174",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-i18next": "^12.2.0",
@@ -177,7 +179,8 @@
         "tailwind-merge": "^1.14.0",
         "tailwindcss-animate": "^1.0.7",
         "uuid": "^9.0.0",
-        "web-vitals": "^4.2.4"
+        "web-vitals": "^4.2.4",
+        "xlsx": "^0.18.5"
     },
     "browserslist": [],
     "prettier": {
