@@ -3,6 +3,7 @@ import * as remote from '../packages/remote'
 import { CopilotDetail } from '../../shared/types'
 import { useAtom } from 'jotai'
 import { myCopilotsAtom } from '../stores/atoms'
+import { getDefaultCopilots } from "../../shared/defaults";
 
 export function useMyCopilots() {
     const [copilots, setCopilots] = useAtom(myCopilotsAtom)
@@ -39,9 +40,11 @@ export function useRemoteCopilots(lang: string, windowOpen: boolean) {
     const [copilots, _setCopilots] = useState<CopilotDetail[]>([])
     useEffect(() => {
         if (windowOpen) {
-            remote.listCopilots(lang).then((copilots) => {
-                _setCopilots(copilots)
-            })
+            let copilots = getDefaultCopilots()
+            _setCopilots(copilots)
+            // remote.listCopilots(lang).then((copilots) => {
+            //     _setCopilots(copilots)
+            // })
         }
     }, [lang, windowOpen])
     return { copilots }
